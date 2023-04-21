@@ -1,45 +1,33 @@
 import { Component } from 'react';
+import PropTypes from 'prop-types';
 import { Statistics } from './Statistics/Statistics';
-// import { FeedbackOptions } from './FeedbackOptions/FeedbackOptions';
+import { FeedbackOptions } from './FeedbackOptions/FeedbackOptions';
+import { Section } from './Section/Section';
+import { Layout } from './Layout/Layout';
+import { GlobalStyle } from './GlobalStyle';
 
 export class App extends Component {
+  static propTypes = {
+    good: PropTypes.number,
+    neutral: PropTypes.number,
+    bad: PropTypes.number,
+    total: PropTypes.number,
+    positivePercentage: PropTypes.number,
+    title: PropTypes.string,
+    options: PropTypes.arrayOf(PropTypes.string),
+    onLeaveFeedback: PropTypes.func,
+  };
+
   state = {
     good: 0,
     neutral: 0,
     bad: 0,
   };
 
-  // const btnLabels = Object.keys(this.state);
-
-  handleGood = evt => {
-    console.log('click on good', evt);
-    this.setState(prevState => {
-      // console.log(prevState);
-      console.log(Object.keys(this.state));
-      return { good: prevState.good + 1 };
-    });
-  };
-
-  // LeaveFeedback = () => {
-  //   this.setState(prevState => {
-  //     // console.log(prevState);
-  //     console.log(Object.keys(this.state));
-  //     return { [option]: this.state[option] + 1 };
-  //   });
-  // };
-
-  handleNeutral = evt => {
-    console.log('click on neutral', evt);
-    this.setState(prevState => {
-      return { neutral: prevState.neutral + 1 };
-    });
-  };
-
-  handleBad = evt => {
-    console.log('click on bad', evt);
-    this.setState(prevState => {
-      return { bad: prevState.bad + 1 };
-    });
+  handleLeaveFeedback = e => {
+    // console.log(e);
+    this.setState({ [e]: this.state[e] + 1 });
+    // console.log(this.state);
   };
 
   countTotalFeedback = () => {
@@ -49,7 +37,7 @@ export class App extends Component {
   countPositiveFeedbackPercentage = () => {
     const totalFeedback = this.state.good + this.state.neutral + this.state.bad;
     const result = Math.round((this.state.good / totalFeedback) * 100);
-    // console.log(result);
+
     if (isNaN(result)) {
       return 0;
     }
@@ -59,34 +47,27 @@ export class App extends Component {
   render() {
     const { good, neutral, bad } = this.state;
     return (
-      <div>
-        <h2>Please leave feedback</h2>
+      <Layout>
+        <Section title="Please leave feedback">
+          <FeedbackOptions
+            options={Object.keys(this.state)}
+            onLeaveFeedback={this.handleLeaveFeedback}
+          />
+        </Section>
 
-        {/* <FeedbackOptions
-          options={Object.keys(this.state)}
-          onLeaveFeedback={this.LeaveFeedback}
-        /> */}
-
-        <div>
-          <button type="button" onClick={this.handleGood}>
-            Good
-          </button>
-          <button type="button" onClick={this.handleNeutral}>
-            Neutral
-          </button>
-          <button type="button" onClick={this.handleBad}>
-            Bad
-          </button>
-        </div>
-
-        <Statistics
-          good={good}
-          neutral={neutral}
-          bad={bad}
-          total={this.countTotalFeedback()}
-          positivePercentage={this.countPositiveFeedbackPercentage()}
-        />
-      </div>
+        <Section title="Statistics">
+          {this.countTotalFeedback() > 0 && (
+            <Statistics
+              good={good}
+              neutral={neutral}
+              bad={bad}
+              total={this.countTotalFeedback()}
+              positivePercentage={this.countPositiveFeedbackPercentage()}
+            />
+          )}
+        </Section>
+        <GlobalStyle />
+      </Layout>
     );
   }
 }
