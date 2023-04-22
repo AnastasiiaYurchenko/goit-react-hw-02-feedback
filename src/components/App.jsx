@@ -5,6 +5,7 @@ import { FeedbackOptions } from './FeedbackOptions/FeedbackOptions';
 import { Section } from './Section/Section';
 import { Layout } from './Layout/Layout';
 import { GlobalStyle } from './GlobalStyle';
+import { Notification } from './Notification/Notification';
 
 export class App extends Component {
   static propTypes = {
@@ -56,7 +57,7 @@ export class App extends Component {
         </Section>
 
         <Section title="Statistics">
-          {this.countTotalFeedback() > 0 && (
+          {this.countTotalFeedback() > 0 ? (
             <Statistics
               good={good}
               neutral={neutral}
@@ -64,6 +65,8 @@ export class App extends Component {
               total={this.countTotalFeedback()}
               positivePercentage={this.countPositiveFeedbackPercentage()}
             />
+          ) : (
+            <Notification message="There is no feedback" />
           )}
         </Section>
         <GlobalStyle />
