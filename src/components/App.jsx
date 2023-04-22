@@ -15,6 +15,7 @@ export class App extends Component {
     total: PropTypes.number,
     positivePercentage: PropTypes.number,
     title: PropTypes.string,
+    message: PropTypes.string,
     options: PropTypes.arrayOf(PropTypes.string),
     onLeaveFeedback: PropTypes.func,
   };
